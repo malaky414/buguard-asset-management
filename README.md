@@ -6,7 +6,7 @@ LangChain-powered Attack Surface Management API built with FastAPI + PostgreSQL.
 
 ```bash
 # 1. Clone the repo
-git clone <your-repo-url>
+git clone <https://github.com/malaky414/buguard-asset-management>
 cd buguard-asset-management
 
 # 2. Setup environment
