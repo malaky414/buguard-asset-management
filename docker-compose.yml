@@ -1,0 +1,33 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-buguard}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-buguard_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-asset_db}
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-buguard} -d ${POSTGRES_DB:-asset_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-buguard}:${POSTGRES_PASSWORD:-buguard_pass}@db:5432/${POSTGRES_DB:-asset_db}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      API_SECRET_KEY: ${API_SECRET_KEY:-changeme}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+volumes:
+  postgres_data:
