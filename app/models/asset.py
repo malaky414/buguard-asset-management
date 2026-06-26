@@ -45,15 +45,12 @@ class Asset(Base):
     source = Column(Enum(AssetSource), nullable=False, default=AssetSource.import_)
     tags = Column(ARRAY(String), nullable=False, default=list)
     metadata_ = Column("metadata", JSON, nullable=False, default=dict)
-
-    # AI fields - بيتملوا بعدين من LangChain
     environment = Column(String, nullable=True)
     category = Column(String, nullable=True)
     criticality = Column(String, nullable=True)
     risk_score = Column(String, nullable=True)
     risk_summary = Column(String, nullable=True)
 
-    # العلاقات مع assets تانية
     outgoing = relationship("AssetRelationship", foreign_keys="AssetRelationship.source_id", back_populates="source_asset", cascade="all, delete-orphan")
     incoming = relationship("AssetRelationship", foreign_keys="AssetRelationship.target_id", back_populates="target_asset", cascade="all, delete-orphan")
 
